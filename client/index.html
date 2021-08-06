@@ -5,7 +5,22 @@
   </head>
   <body class="container">
     <button id="complimentButton">Get a compliment</button>
-
+    <button id="fortuneButton">Get a fortune</button>
+    <button id="positiveWordButton">Get a nice word</button>
+    <form>
+      <h2>Goals</h2>
+      <input type="text" id="addGoal" name="addGoal" placeholder="Add a new goal">
+      <input type="submit" id="submit" name="submit" value="Submit">
+      <ul id="goalsList"></ul>
+    </form>
+    <section id="quoteContainer">
+      <h2>Seclect A Quote</h2>
+      <select id="quoteList" name="quoteList">
+        <option>Brown</option>
+        <option>Whitman</option>
+      </select>
+      <div id="quoteOutput"></div>
+    </section>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
       document.getElementById("complimentButton").onclick = function () {
@@ -15,6 +30,56 @@
               alert(data);
             });
       };
+      document.getElementById("fortuneButton").onclick = function () {
+        axios.get("http://localhost:4000/api/fortune")
+          .then(function (response) {
+            const data = response.data;
+            alert(data);
+          })
+          .catch(err => console.log(err))
+      };
+      document.getElementById("positiveWordButton").onclick = function () {
+        axios.get("http://localhost:4000/api/words")
+          .then(function (response) {
+            const data = response.data;
+            alert(data);
+          })
+          .catch(err => console.log(err))
+      };
+      const form = document.querySelector("form");
+      const addGoal = document.querySelector("#addGoal");
+      const goalsList = document.querySelector("#goalsList")
+      function submitHandler(e) {
+        e.preventDefault();
+        let goalObj = {
+          goal: addGoal.value
+        };
+        
+        axios.post("http://localhost:4000/api/goals", goalObj)
+          .then(res => {
+            console.log(res.data);
+            let goals = res.data
+            for(let i = 0; i < goals.length; i++) {
+              const listItem = document.createElement("li");
+              listItem.innerText = goals[i]
+              goalsList.appendChild(listItem);
+            }
+          })
+          .catch(err => console.log(err))
+
+        addGoal.value = "";
+      }
+      form.addEventListener("submit", submitHandler);
+      const quoteList = document.querySelector("#quoteList");
+      function quoteHandler(e) {
+        let person = event.target.value
+        axios.get("http://localhost:4000/api/quotes")
+          .then(res => {
+            console.log(res.data)
+          })
+          .catch(err => console.log(err))
+      }
+      quoteList.addEventListener("change", quoteHandler);
     </script>
   </body>
 </html>
