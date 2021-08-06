@@ -56,9 +56,12 @@ app.get("/api/goals", (req, res) => {
 })
 
 app.get("/api/quotes", (req, res) => {
-  let quotes = ["The best preparation for tomorrow is doing your best today.",
-    "Keep your face always toward the sunshine and shadows will fall behind you."]
-  res.status(200).send();
+  let quotes = {
+    "Brown": "The best preparation for tomorrow is doing your best today.",
+    "Whitman": "Keep your face always toward the sunshine and shadows will fall behind you.",
+    "Lombardi": "Perfection is not attainable, but if we chace perfection we can catch excellence."
+  }
+    res.status(200).send(quotes);
 })
 
 app.listen(4000, () => console.log("Server running on 4000"));

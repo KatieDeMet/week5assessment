@@ -18,6 +18,7 @@
       <select id="quoteList" name="quoteList">
         <option>Brown</option>
         <option>Whitman</option>
+        <option>Lombardi</option>
       </select>
       <div id="quoteOutput"></div>
     </section>
@@ -51,6 +52,7 @@
       const goalsList = document.querySelector("#goalsList")
       function submitHandler(e) {
         e.preventDefault();
+        goalsList.innerHTML = ``;
         let goalObj = {
           goal: addGoal.value
         };
@@ -71,11 +73,21 @@
       }
       form.addEventListener("submit", submitHandler);
       const quoteList = document.querySelector("#quoteList");
+      const quoteOutput = document.querySelector("#quoteOutput");
       function quoteHandler(e) {
+        quoteOutput.innerText = "";
         let person = event.target.value
         axios.get("http://localhost:4000/api/quotes")
           .then(res => {
-            console.log(res.data)
+            console.log(res.data);
+            const quoteObj = res.data;
+            for(let q in quoteObj) {
+              if(q === person) {
+                const quoteBlock = document.createElement("p");
+                quoteBlock.innerText = quoteObj[q];
+                quoteOutput.appendChild(quoteBlock);
+              }
+            }
           })
           .catch(err => console.log(err))
       }
