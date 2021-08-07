@@ -1,0 +1,9 @@
+#picOutput {
+    width: 30vw;
+    height: 40vh;
+}
+
+#picContainer img{
+    width: 100%;
+    height: auto;
+}

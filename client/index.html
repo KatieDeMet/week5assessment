@@ -2,11 +2,16 @@
 <html>
   <head>
     <title>Back End Assessment</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body class="container">
     <button id="complimentButton">Get a compliment</button>
     <button id="fortuneButton">Get a fortune</button>
     <button id="positiveWordButton">Get a nice word</button>
+    <button id="picButton">Get pic</button>
+    <div id="picOutput">
+    <p id="picContainer"></p>
+    </div>
     <form>
       <h2>Goals</h2>
       <input type="text" id="addGoal" name="addGoal" placeholder="Add a new goal">
@@ -52,7 +57,7 @@
       const goalsList = document.querySelector("#goalsList")
       function submitHandler(e) {
         e.preventDefault();
-        goalsList.innerHTML = ``;
+        goalsList.innerHTML = null;
         let goalObj = {
           goal: addGoal.value
         };
@@ -92,6 +97,20 @@
           .catch(err => console.log(err))
       }
       quoteList.addEventListener("change", quoteHandler);
+      const picButton = document.querySelector("#picButton");
+      let picContainer = document.querySelector("#picContainer");
+      function addPic() {
+        axios.get("http://localhost:4000/api/pics")
+          .then(res => {
+            picContainer.innerHTML = "";
+            let randomImage = res.data;
+            let newImage = document.createElement("img");
+            newImage.setAttribute("src", randomImage);
+            picContainer.appendChild(newImage);
+          })
+          .catch(err => console.log(err))
+      };
+      picButton.addEventListener("click", addPic);
     </script>
   </body>
 </html>

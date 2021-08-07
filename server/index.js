@@ -64,4 +64,11 @@ app.get("/api/quotes", (req, res) => {
     res.status(200).send(quotes);
 })
 
+app.get("/api/pics", (req, res) => {
+  let images = ["../images/smiley.jpg", "../images/success.jpg", "../images/uphill.jpg", "../images/victory.jpg", "../images/waterButterflies.jpg"];
+  let randomIndex = Math.floor(Math.random() * images.length);
+  let randomImage = images[randomIndex];
+  res.status(200).send(randomImage);
+})
+
 app.listen(4000, () => console.log("Server running on 4000"));
