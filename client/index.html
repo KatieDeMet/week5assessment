@@ -16,8 +16,8 @@
       <h2>Goals</h2>
       <input type="text" id="addGoal" name="addGoal" placeholder="Add a new goal">
       <input type="submit" id="submit" name="submit" value="Submit">
-      <ul id="goalsList"></ul>
     </form>
+      <ul id="goalsList"></ul>
     <section id="quoteContainer">
       <h2>Seclect A Quote</h2>
       <select id="quoteList" name="quoteList">
@@ -52,31 +52,58 @@
           })
           .catch(err => console.log(err))
       };
+
       const form = document.querySelector("form");
       const addGoal = document.querySelector("#addGoal");
       const goalsList = document.querySelector("#goalsList")
+      let goalID = 0
+
       function submitHandler(e) {
         e.preventDefault();
-        goalsList.innerHTML = null;
         let goalObj = {
+          id: goalID,
           goal: addGoal.value
         };
-        
+        goalID++
         axios.post("http://localhost:4000/api/goals", goalObj)
-          .then(res => {
-            console.log(res.data);
-            let goals = res.data
-            for(let i = 0; i < goals.length; i++) {
-              const listItem = document.createElement("li");
-              listItem.innerText = goals[i]
-              goalsList.appendChild(listItem);
-            }
-          })
+          .then(constructList)
           .catch(err => console.log(err))
 
         addGoal.value = "";
       }
       form.addEventListener("submit", submitHandler);
+
+      function deleteGoalItem(event) {
+        const deleteButtonID = +event.target.id
+        axios.delete(`http://localhost:4000/api/goals/${deleteButtonID}`)
+          .then(constructList)
+          .catch(err => console.log(err))
+      }
+
+      const constructList = (res) => {
+        let goals = res.data
+        goalsList.innerHTML = null;
+        console.log(res.data)
+        for(let i = 0; i < goals.length; i++) {
+          const listItem = document.createElement("li");
+          const deleteButton = document.createElement("button");
+          deleteButton.innerText = "-";
+          deleteButton.classList.add("deleteButtons");
+          deleteButton.id = +goals[i].id
+          deleteButton.addEventListener("click", deleteGoalItem)
+          listItem.classList.add("goalListItem");
+          listItem.innerText = goals[i].goal;
+          listItem.appendChild(deleteButton);
+          goalsList.appendChild(listItem);
+        }
+      }
+      // let deleteButtons = document.querySelectorAll(".deleteButtons");
+      // for(let i = 0; i < deleteButtons.length; i++) {
+      //   i.addEventListener("click", deleteGoalItem);
+      // }
+      
+
+
       const quoteList = document.querySelector("#quoteList");
       const quoteOutput = document.querySelector("#quoteOutput");
       function quoteHandler(e) {
@@ -84,7 +111,6 @@
         let person = event.target.value
         axios.get("http://localhost:4000/api/quotes")
           .then(res => {
-            console.log(res.data);
             const quoteObj = res.data;
             for(let q in quoteObj) {
               if(q === person) {

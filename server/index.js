@@ -8,7 +8,7 @@ app.use(cors());
 
 app.use(express.json()); // When we want to be able to accept JSON.
 
-let goals = ["Make it work"];
+let goals = [];
 
 app.get("/api/compliment", (req, res) => {
   const compliments = ["Gee, you're a smart cookie!",
@@ -46,12 +46,18 @@ app.get("/api/words", (req, res) => {
 });
 
 app.post("/api/goals", (req, res) => {
-  let {goal} = req.body;
-  goals.push(goal);
+  let {id, goal} = req.body;
+  let goalObj = {
+    id: id,
+    goal: goal
+  }
+  goals.push(goalObj);
   res.status(200).send(goals);
 })
 
-app.get("/api/goals", (req, res) => {
+app.delete("/api/goals/:id", (req, res) => {
+  let index = goals.findIndex(goal => goal.id === +req.params.id)
+  goals.splice(index, 1);
   res.status(200).send(goals);
 })
 

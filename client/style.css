@@ -1,9 +1,8 @@
-#picOutput {
-    width: 30vw;
-    height: 40vh;
+#picContainer img{
+    max-width: 300px;
+    height: auto;
 }
 
-#picContainer img{
-    width: 100%;
-    height: auto;
+.deleteButtons {
+    background-color: aquamarine;
 }
